@@ -4,6 +4,8 @@
    01 Feb 2022
    Like all Arduino code - copied from somewhere else :)
    So don't claim it as your own
+
+    Cancel original TurnSensor  to make a virtual TurnSensor  based on Error  Bricbric 2024
 */
 
 ////////////////// User Settings /////////////////////////
