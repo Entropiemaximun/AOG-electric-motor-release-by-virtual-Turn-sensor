@@ -20,15 +20,15 @@ Based  on   quality  of  answer   from AgopenGPS setting  and  the hardware  we 
 ------------------------------------------------------
 Code dédié au moteur électrique
 
-Définir un nouveau capteur de rotation  virtuel que l'on peut ajuster dans les paramètres d'AgOpenGPS 
+Définir un nouveau capteur de rotation de volant virtuel que l'on peut ajuster dans les paramètres d'AgOpenGPS 
 
-  Pendant l'autoguidage, le WAS évalue l'erreur :
+  Pendant l'autoguidage, le WAS évalue l'erreur du WAS ( capteur d'angle de la roue) :
 Si l'erreur se maintient ou se réduit, on peut considérer que c'est normal. 
 Mais si l'erreur augmente de plus en plus, il s'agit d'une situation anormale :
  Comme si la direction etait manuelle ou le capteur de WAS avait  un probleme
 
  Ce code vérifie l'erreur et ajoute la quantité d'erreur en fonction de la situation anormale.  
-    Le résultat est qu'il arrête l'autoguidage si la valeur du capteur de virage est supérieure à la valeur de quantité d'erreur.
+    Le résultat est qu'il arrête l'autoguidage si la valeur du capteur de rotation de volant est supérieure à la valeur de quantité d'erreur.
 
 
 En fonction de la qualité de la réponse de l'AgopenGPS et du matériel, nous pouvons régler la valeur du capteur de virage entre 30 et 60. 
