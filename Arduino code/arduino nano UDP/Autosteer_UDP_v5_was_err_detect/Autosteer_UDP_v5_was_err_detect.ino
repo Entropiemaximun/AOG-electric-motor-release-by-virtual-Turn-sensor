@@ -4,6 +4,7 @@
     * 4 Feb 2021, Brian Tischler
     * Like all Arduino code - copied from somewhere else :)
     * So don't claim it as your own
+        Cancel original TurnSensor  to make a virtual TurnSensor  based on Error  Bricbric 2024
     */
 
     #include <Wire.h>
