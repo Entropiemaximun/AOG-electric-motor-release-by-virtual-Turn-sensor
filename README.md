@@ -33,3 +33,8 @@ Mais si l'erreur augmente de plus en plus, il s'agit d'une situation anormale :
 
 En fonction de la qualité de la réponse de l'AgopenGPS et du matériel, nous pouvons régler la valeur du capteur de virage entre 30 et 60. 
 
+-----------------------------------------------------------------------------------------------
+Bonus ;  it include the  switch mode to stop autosteer ( code from Matthew Elias)
+Bonus : inclus  le switch mode  et  l'arret de l'autosteer ( code de Matthew Elias)
+https://github.com/m-elias/AgOpenGPS_Boards/tree/master/TeensyModules/V4.1/Firmware
+
