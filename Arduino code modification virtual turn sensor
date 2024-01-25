@@ -1,13 +1,13 @@
 [Arduino code modification :]
 
 
-to be add   after  " float steerAngleError = 0; //setpoint - actual" 
+>> to be add   after  " float steerAngleError = 0; //setpoint - actual" 
 
 float steerAngleOld = 0; //keep  old  steering sensor error  //  ajout bricbric  **************
 
 ------------------------------------
 
-  to be cancel  from  loop
+>> to be cancel  from  "loop"
   
      if (steerConfig.ShaftEncoder && pulseCount >= steerConfig.PulseCountMax)
     {
@@ -17,7 +17,7 @@ float steerAngleOld = 0; //keep  old  steering sensor error  //  ajout bricbric 
     }
 
 
-and be replace   by  :
+>> and be replace   by  :
 
    if ( pulseCount > 240  ) {
       pulseCount =  240;
@@ -43,14 +43,13 @@ and be replace   by  :
           pulseCount = pulseCount / 2;
         }
       }
-
-    }
+    }  //ajout bricbric  ***************
 
     steerAngleOld =  abs(steerAngleError) * 1;
 	
 	----------------------------
 	
-	 to be replace :
+>>to be replace :
 	                 if ((bitRead(guidanceStatus, 0) == 0) || (gpsSpeed < 0.1) || (steerSwitch == 1))
                 {
                     watchdogTimer = WATCHDOG_FORCE_VALUE; //turn off steering motor
@@ -58,11 +57,11 @@ and be replace   by  :
                 }
 	
 	
-	to get this result 
+>>to get this result 
 	                if ((bitRead(guidanceStatus, 0) == 0) || (gpsSpeed < 0.1) || (steerSwitch == 1))
                 {
                     watchdogTimer = WATCHDOG_FORCE_VALUE; //turn off steering motor
-                    pulseCount = 0;  //// ajout    ajout bricbric  ***************
+                    pulseCount = 0;  //    ajout bricbric  ****************
                 }
 				
 				
@@ -71,11 +70,11 @@ and be replace   by  :
 	Extra bonus  for switch    cf Matthew Elias
 	
 	
-	   remove :
+>> remove :
 	   
 	      steerSwitch = digitalRead(STEERSW_PIN); //read auto steer enable switch open = 0n closed = Off
       
-	  and replace   by 
+>> and replace   by 
 	  
 	  // new code for steer "Switch" mode that keeps AutoSteer OFF after current/pressure kickout until switch is cycled
       reading = digitalRead(STEERSW_PIN);
