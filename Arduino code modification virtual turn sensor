@@ -1,0 +1,92 @@
+[Arduino code modification :]
+
+
+to be add   after  " float steerAngleError = 0; //setpoint - actual" 
+
+float steerAngleOld = 0; //keep  old  steering sensor error  //  ajout bricbric  **************
+
+------------------------------------
+
+  to be cancel  from  loop
+  
+     if (steerConfig.ShaftEncoder && pulseCount >= steerConfig.PulseCountMax)
+    {
+      steerSwitch = 1; // reset values like it turned off
+      currentState = 1;
+      previous = 0;
+    }
+
+
+and be replace   by  :
+
+   if ( pulseCount > 240  ) {
+      pulseCount =  240;
+    }
+    if (steerConfig.ShaftEncoder/* && pulseCount >= steerConfig.PulseCountMax*/)
+    {
+      if ( abs(steerAngleError) >=  steerAngleOld ) {
+        if ( abs(steerAngleError) >  steerAngleOld ) {
+          pulseCount = pulseCount + 5;
+          if ( pulseCount >= steerConfig.PulseCountMax)
+          {
+            steerSwitch = 1; // reset values like it turned off
+            currentState = 1;
+            previous = 0;
+          }
+        } else {
+          if ( pulseCount > 2  ) pulseCount = pulseCount - 3;
+        }
+      } else {
+        if ( pulseCount < 10  ) {
+          pulseCount =  0;
+        } else {
+          pulseCount = pulseCount / 2;
+        }
+      }
+
+    }
+
+    steerAngleOld =  abs(steerAngleError) * 1;
+	
+	----------------------------
+	
+	 to be replace :
+	                 if ((bitRead(guidanceStatus, 0) == 0) || (gpsSpeed < 0.1) || (steerSwitch == 1))
+                {
+                    watchdogTimer = WATCHDOG_FORCE_VALUE; //turn off steering motor
+                   
+                }
+	
+	
+	to get this result 
+	                if ((bitRead(guidanceStatus, 0) == 0) || (gpsSpeed < 0.1) || (steerSwitch == 1))
+                {
+                    watchdogTimer = WATCHDOG_FORCE_VALUE; //turn off steering motor
+                    pulseCount = 0;  //// ajout    ajout bricbric  ***************
+                }
+				
+				
+				
+				
+	Extra bonus  for switch    cf Matthew Elias
+	
+	
+	   remove :
+	   
+	      steerSwitch = digitalRead(STEERSW_PIN); //read auto steer enable switch open = 0n closed = Off
+      
+	  and replace   by 
+	  
+	  // new code for steer "Switch" mode that keeps AutoSteer OFF after current/pressure kickout until switch is cycled
+      reading = digitalRead(STEERSW_PIN);
+      if (reading == HIGH)  // switching "OFF"
+      {
+        steerSwitch = reading;
+      }
+      else if (reading == LOW && previous == HIGH)
+      {
+        steerSwitch = reading;
+      }
+      previous = reading;
+
+ //ajout bricbric  *****   cf Matthew Elias
