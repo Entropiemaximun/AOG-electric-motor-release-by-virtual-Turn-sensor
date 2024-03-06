@@ -377,7 +377,7 @@ void autosteerLoop()
 
     }
 
-    steerAngleOld =  abs(steerAngleError) * 1;
+    steerAngleOld =  abs(steerAngleError) * 1.0001; // update V1.01
     //  add  the  function  to evaluate the error versus the old one  and use  Pulse count as  sum of error *******
 
     // Pressure sensor?
