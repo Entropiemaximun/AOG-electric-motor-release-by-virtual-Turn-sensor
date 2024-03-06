@@ -404,7 +404,7 @@ float steerAngleOld = 0; //keep  old  steering sensor error  //  ajout bricbric 
 
     }
 
-    steerAngleOld =  abs(steerAngleError) * 1;
+    steerAngleOld =  abs(steerAngleError) * 1.0001; // update
     //  add  the  function  to evaluate the error versus the old one  and use  Pulse count as  sum of error *******
 
 
