@@ -438,8 +438,8 @@ float steerAngleOld = 0; //keep  old  steering sensor error  //  ajout bricbric 
         }
       }
     }  //ajout bricbric  ***************
-
-    steerAngleOld =  abs(steerAngleError) * 1;
+	    
+    steerAngleOld =  abs(steerAngleError) * 1.0001; // update
 
     
       // Pressure sensor?
