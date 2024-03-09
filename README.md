@@ -28,4 +28,5 @@ Bonus : inclus  le switch mode  et  l'arret de l'autosteer ( code de Matthew Eli
 https://github.com/m-elias/AgOpenGPS_Boards/tree/master/TeensyModules/V4.1/Firmware
 
 
-06 march 2024  update 1%of%1  https://www.youtube.com/shorts/KypmzL3KVJA
+-----------------------------------------------------------------------------------------------
+06 march 2024 : update 1%of%1  https://www.youtube.com/shorts/KypmzL3KVJA
