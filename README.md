@@ -27,3 +27,5 @@ Bonus ;  it include the  switch mode to stop autosteer ( code from Matthew Elias
 Bonus : inclus  le switch mode  et  l'arret de l'autosteer ( code de Matthew Elias)
 https://github.com/m-elias/AgOpenGPS_Boards/tree/master/TeensyModules/V4.1/Firmware
 
+
+06 march 2024  update 1%of%1  https://www.youtube.com/shorts/KypmzL3KVJA
