@@ -445,8 +445,8 @@
     }
     if (steerConfig.ShaftEncoder/* && pulseCount >= steerConfig.PulseCountMax*/)
     {
-      if ( abs(steerAngleError) >=  steerAngleOld ) {
-        if ( abs(steerAngleError) >  steerAngleOld ) {
+      if ( abs(steerAngleError) >  steerAngleOld and abs(steerAngleError) > 1 ) {  //modif
+        
           pulseCount = pulseCount + 5;
           if ( pulseCount >= steerConfig.PulseCountMax)
           {
@@ -454,9 +454,7 @@
             currentState = 1;
             previous = 0;
           }
-        } else {
-          if ( pulseCount > 2  ) pulseCount = pulseCount - 3;
-        }
+        
       } else {
         if ( pulseCount < 10  ) {
           pulseCount =  0;
