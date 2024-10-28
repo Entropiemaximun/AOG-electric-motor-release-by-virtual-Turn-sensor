@@ -26,19 +26,19 @@ void calcSteeringPID(void)
 
   if (steerConfig.MotorDriveDirection) pwmDrive *= -1;
 
-  if (steerConfig.IsDanfoss)
-  {
-    // Danfoss: PWM 25% On = Left Position max  (below Valve=Center)
-    // Danfoss: PWM 50% On = Center Position
-    // Danfoss: PWM 75% On = Right Position max (above Valve=Center)
-    pwmDrive = (constrain(pwmDrive, -250, 250));
-
-    // Calculations below make sure pwmDrive values are between 65 and 190
-    // This means they are always positive, so in motorDrive, no need to check for
-    // steerConfig.isDanfoss anymore
-    pwmDrive = pwmDrive >> 2; // Devide by 4
-    pwmDrive += 128;          // add Center Pos.
-  }
+//  if (steerConfig.IsDanfoss)
+//  {
+//    // Danfoss: PWM 25% On = Left Position max  (below Valve=Center)
+//    // Danfoss: PWM 50% On = Center Position
+//    // Danfoss: PWM 75% On = Right Position max (above Valve=Center)
+//    pwmDrive = (constrain(pwmDrive, -250, 250));
+//
+//    // Calculations below make sure pwmDrive values are between 65 and 190
+//    // This means they are always positive, so in motorDrive, no need to check for
+//    // steerConfig.isDanfoss anymore
+//    pwmDrive = pwmDrive >> 2; // Devide by 4
+//    pwmDrive += 128;          // add Center Pos.
+//  }
  }
 
 //#########################################################################################
