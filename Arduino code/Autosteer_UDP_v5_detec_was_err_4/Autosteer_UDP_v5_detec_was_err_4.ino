@@ -7,6 +7,7 @@
     * 
     * 
     Cancel original TurnSensor  to make a virtual TurnSensor  based on Error  Bricbric 2024
+    update Cancel small angle, add delay,stop low speed ;  danfoss choice  for  proportional instead  step  10 2024 
     */
 
     #include <Wire.h>
