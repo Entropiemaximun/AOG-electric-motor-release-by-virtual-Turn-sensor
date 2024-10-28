@@ -7,6 +7,7 @@
    * 
    * 
     Cancel original TurnSensor  to make a virtual TurnSensor  based on Error  Bricbric 2024
+       update Cancel small angle, add delay,stop low speed ;  danfoss choice  for  proportional instead  step  10 2024 
    */
 
   ////////////////// User Settings /////////////////////////  
@@ -162,6 +163,7 @@ float steerAngleOld = 0; //keep  old  steering sensor error  //  ajout bricbric 
   //Steer switch button  ***********************************************************************************************************
   uint8_t currentState = 1, reading, previous = 0;
   uint8_t pulseCount = 0; // Steering Wheel Encoder
+  uint8_t pulseCount1 = 0; // Steering Wheel Encoder  //  ajout bricbric  **************
   bool encEnable = false; //debounce flag
   uint8_t thisEnc = 0, lastEnc = 0;
 
@@ -413,33 +415,81 @@ float steerAngleOld = 0; //keep  old  steering sensor error  //  ajout bricbric 
 //        currentState = 1;
 //        previous = 0;
 //      }
- if ( pulseCount > 240  ) {
-      pulseCount =  240;
-    }
-    if (steerConfig.ShaftEncoder/* && pulseCount >= steerConfig.PulseCountMax*/)
-    {
-      if ( abs(steerAngleError) >  steerAngleOld and abs(steerAngleError) > 1 ) {  //modif
-        
-          pulseCount = pulseCount + 5;
-          if ( pulseCount >= steerConfig.PulseCountMax)
-          {
-            steerSwitch = 1; // reset values like it turned off
-            currentState = 1;
-            previous = 0;
+   ////////////////////////
+    float abs_AngleError = abs(steerAngleError);
+    if (steerConfig.ShaftEncoder) {
+      if (!steerSwitch) { //  if steer ...
+        if (pulseCount) {
+          if (pulseCount > 250) {
+            pulseCount = 250;
           }
-        
-      } else {
-        if ( pulseCount < 10  ) {
-          pulseCount =  0;
-        } else {
-          pulseCount = pulseCount / 2;
+          if (pulseCount1 > 250) {
+            pulseCount1 = 250;
+          }
+          // daniel idea
+          if ((steerAngleOld + 5 < abs_AngleError) || gpsSpeed <= 1) {
+            pulseCount = 0;
+          } else if (abs_AngleError >= steerAngleOld && abs_AngleError > 0.5) {
+            pulseCount += constrain(abs_AngleError, 0, 5);
+          } else {
+            if (pulseCount < 10) {
+              pulseCount = 1;
+            } else {
+              pulseCount = pulseCount / 2;
+            }
+          }
+          //  bric bric idea
+          if ( gpsSpeed <= 1) {
+            pulseCount1 = 0;
+          } else if (abs_AngleError >= steerAngleOld && abs_AngleError > (LOW_HIGH_DEGREES / 2)) {
+            pulseCount1 += 5;
+          } else {
+            if (pulseCount1 < 10) {
+              pulseCount1 = 1;
+            } else {
+              pulseCount1 = pulseCount1 / 2;
+            }
+          }
+
+          if (steerConfig.IsDanfoss) {  // daniel
+            sensorReading = pulseCount;
+            if (pulseCount >= steerConfig.PulseCountMax ) {
+              steerSwitch = 1;  // reset values like it turned off
+              currentState = 1;
+              previous = 0;
+              //AngleServo = DebrayageServo;
+
+            }
+          } else {  //  bribric
+            sensorReading = pulseCount1;
+            if ( pulseCount1 >= steerConfig.PulseCountMax) {
+              steerSwitch = 1;  // reset values like it turned off
+              currentState = 1;
+              previous = 0;
+              //AngleServo = DebrayageServo;
+
+            }
+          }
+
+          steerAngleOld = abs_AngleError;
+
+        }        else {
+          if (gpsSpeed > 1) {
+            if (sensorReading++ > 1500 / LOOP_TIME) {
+              sensorReading = pulseCount = pulseCount1 = 1;
+            }
+          } else {
+            sensorReading = 0;
+          }
         }
+      } else {
+        sensorReading = pulseCount = pulseCount1 = 0;
+
       }
+    }
 
-    }//ajout bricbric  ***************
-	    
-    steerAngleOld =  abs(steerAngleError) * 1.0001; // update
 
+    //   end  modif  BricBric & Daniel
     
       // Pressure sensor?
       if (steerConfig.PressureSensor)
