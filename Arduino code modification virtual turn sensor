@@ -1,5 +1,35 @@
 [Arduino code modification :]
 
+>>>>>>>>>>>>>>>>>>>   AutosteerPID.ino
+  >>  cancel or erase   Danfoss function  
+
+
+//    if (steerConfig.IsDanfoss)
+//    {
+//        // Danfoss: PWM 25% On = Left Position max  (below Valve=Center)
+//        // Danfoss: PWM 50% On = Center Position
+//        // Danfoss: PWM 75% On = Right Position max (above Valve=Center)
+//        pwmDrive = (constrain(pwmDrive, -250, 250));
+//
+//        // Calculations below make sure pwmDrive values are between 65 and 190
+//        // This means they are always positive, so in motorDrive, no need to check for
+//        // steerConfig.isDanfoss anymore
+//        pwmDrive = pwmDrive >> 2; // Devide by 4
+//        pwmDrive += 128;          // add Center Pos.
+//
+//        // pwmDrive now lies in the range [65 ... 190], which would be great for an ideal opamp
+//        // However the TLC081IP is not ideal. Approximating from fig 4, 5 TI datasheet, @Vdd=12v, T=@40Celcius, 0 current
+//        // Voh=11.08 volts, Vol=0.185v
+//        // (11.08/12)*255=235.45
+//        // (0.185/12)*255=3.93
+//        // output now lies in the range [67 ... 205], the center position is now 136
+//        //pwmDrive = (map(pwmDrive, 4, 235, 0, 255));
+//    }
+
+
+>>>>>>>>>>>>>>>>>>> Autosteer.ino
+
+
 
 >> to be add   after  " float steerAngleError = 0; //setpoint - actual" 
 
@@ -19,52 +49,85 @@ float steerAngleOld = 0; //keep  old  steering sensor error  //  ajout bricbric 
 
 >> and be replace   by  :
 
-   if ( pulseCount > 240  ) {
-      pulseCount =  240;
-    }
-    if (steerConfig.ShaftEncoder/* && pulseCount >= steerConfig.PulseCountMax*/)
-    {
-      if ( abs(steerAngleError) >=  steerAngleOld ) {
-        if ( abs(steerAngleError) >  steerAngleOld ) {
-          pulseCount = pulseCount + 5;
-          if ( pulseCount >= steerConfig.PulseCountMax)
-          {
-            steerSwitch = 1; // reset values like it turned off
-            currentState = 1;
-            previous = 0;
+    ////////////////////////
+    float abs_AngleError = abs(steerAngleError);
+    if (steerConfig.ShaftEncoder) {
+      if (!steerSwitch) { //  if steer ...
+        if (pulseCount) {
+          if (pulseCount > 250) {
+            pulseCount = 250;
           }
-        } else {
-          if ( pulseCount > 2  ) pulseCount = pulseCount - 3;
+          if (pulseCount1 > 250) {
+            pulseCount1 = 250;
+          }
+          // daniel idea
+          if ((steerAngleOld + 5 < abs_AngleError) || gpsSpeed <= 1) {
+            pulseCount = 0;
+          } else if (abs_AngleError >= steerAngleOld && abs_AngleError > 0.5) {
+            pulseCount += constrain(abs_AngleError, 0, 5);
+          } else {
+            if (pulseCount < 10) {
+              pulseCount = 1;
+            } else {
+              pulseCount = pulseCount / 2;
+            }
+          }
+          //  bric bric idea
+          if ( gpsSpeed <= 1) {
+            pulseCount1 = 0;
+          } else if (abs_AngleError >= steerAngleOld && abs_AngleError > (LOW_HIGH_DEGREES / 2)) {
+            pulseCount1 += 5;
+          } else {
+            if (pulseCount1 < 10) {
+              pulseCount1 = 1;
+            } else {
+              pulseCount1 = pulseCount1 / 2;
+            }
+          }
+
+          if (steerConfig.IsDanfoss) {  // daniel
+            sensorReading = pulseCount;
+            if (pulseCount >= steerConfig.PulseCountMax ) {
+              steerSwitch = 1;  // reset values like it turned off
+              currentState = 1;
+              previous = 0;
+              
+
+            }
+          } else {  //  bribric
+            sensorReading = pulseCount1;
+            if ( pulseCount1 >= steerConfig.PulseCountMax) {
+              steerSwitch = 1;  // reset values like it turned off
+              currentState = 1;
+              previous = 0;
+              
+
+            }
+          }
+
+          steerAngleOld = abs_AngleError;
+
+        }        else {
+          if (gpsSpeed > 1) {
+            if (sensorReading++ > 1500 / LOOP_TIME) {
+              sensorReading = pulseCount = pulseCount1 = 1;
+            }
+          } else {
+            sensorReading = 0;
+          }
         }
       } else {
-        if ( pulseCount < 10  ) {
-          pulseCount =  0;
-        } else {
-          pulseCount = pulseCount / 2;
-        }
-      }
-    }  //ajout bricbric  ***************
+        sensorReading = pulseCount = pulseCount1 = 0;
 
-    steerAngleOld =  abs(steerAngleError) * 1;
+      }
+    }
+
+
+    //   end  modif  BricBric & Daniel
 	
 	----------------------------
 	
->>to be replace :
-	                 if ((bitRead(guidanceStatus, 0) == 0) || (gpsSpeed < 0.1) || (steerSwitch == 1))
-                {
-                    watchdogTimer = WATCHDOG_FORCE_VALUE; //turn off steering motor
-                   
-                }
-	
-	
->>to get this result 
-	                if ((bitRead(guidanceStatus, 0) == 0) || (gpsSpeed < 0.1) || (steerSwitch == 1))
-                {
-                    watchdogTimer = WATCHDOG_FORCE_VALUE; //turn off steering motor
-                    pulseCount = 0;  //    ajout bricbric  ****************
-                }
-				
-				
+
 				
 				
 	Extra bonus  for switch    cf Matthew Elias
