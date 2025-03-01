@@ -37,6 +37,15 @@ float steerAngleOld = 0; //keep  old  steering sensor error  //  ajout bricbric 
 
 ------------------------------------
 
+
+
+>> to be add   after "uint8_t pulseCount = 0; // Steering Wheel Encoder"
+
+uint8_t pulseCount1 = 0; // Steering Wheel Encoder  //  ajout bricbric  **************
+
+------------------------------------
+
+
 >> to be cancel  from  "loop"
   
      if (steerConfig.ShaftEncoder && pulseCount >= steerConfig.PulseCountMax)
